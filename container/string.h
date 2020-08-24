@@ -46,6 +46,7 @@ namespace TAP
             //默认空字符串
             this->push_back('\0');
         }
+
         //返回字符串长度，不包含\0
         int size()
         {
@@ -55,6 +56,37 @@ namespace TAP
         const char *c_str()
         {
             return this->begin();
+        }
+
+        //比较两个字符串,若相等返回0
+        int compare(const char *str)
+        {
+            int strLen = std::strlen(str);
+            //空字符串相等
+            if (strLen == 0 && this->size() == 0)
+            {
+                return 0;
+            }
+            //非空字符串，如果长度不等则不等
+            if (strLen != this->size())
+            {
+                return this->c_str()[0] - str[0];
+            }
+            //逐个比较
+            for (int i = 0; i < strLen; i++)
+            {
+                if (this->c_str()[i] != str[i])
+                {
+                    return this->c_str()[i] - str[i];
+                }
+            }
+            return 0;
+        }
+
+        //是否相等
+        bool equals(const char *str)
+        {
+            return this->compare(str) == 0;
         }
 
         //寻找substring(char *)在string中的位置，找不到返回-1
@@ -84,6 +116,12 @@ namespace TAP
         int find(String &subString)
         {
             return this->find(subString.c_str());
+        }
+
+        //是否包含子字符串
+        bool contains(const char *str)
+        {
+            return this->find(str) >= 0;
         }
 
         //追加字符串
@@ -150,6 +188,10 @@ namespace TAP
             std::vector<String> *result = new std::vector<String>();
             String *remainString = &(this->subString(0));
             int index = remainString->find(split);
+
+            if(index<0){
+                result->push_back(*(new String(this->c_str())));
+            }
 
             int splitStrLen = std::strlen(split);
 
