@@ -102,13 +102,20 @@ namespace TAP
             : _max_size{vector._max_size}, _size{vector._size}, _arr{vector._arr}
         {
             //将临时变量里的数组空间清空
-            //其实我还是不知道为什么怎么做，不需要使用delete么
             vector._arr = nullptr;
         }
 
         //在等号赋值的时候调用，愈发不知道在做什么,o(╥﹏╥)o
-        Vector &operator=(const Vector &&vector)
+        Vector &operator=(Vector &&vector)
         {
+            std::swap(vector._arr, this->_arr);
+            std::cout << "right copy\n";
+            return *this;
+        }
+
+        Vector &operator=(const Vector &vector)
+        {
+            std::cout << "const copy\n";
             Vector temp{vector};
             std::swap(temp._arr, this->_arr);
             return *this;
@@ -166,6 +173,7 @@ namespace TAP
                 this->_size = this->_size - 1;
                 return this->_arr[this->_size];
             }
+            throw "Out of range.";
         }
 
         //到数组头的指针

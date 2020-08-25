@@ -10,7 +10,7 @@ namespace TAP
 {
     //将两个char*字符串拼成一个String
     //供String内部调用
-    char *combine(const char *left, const char *right)
+    const char *combine(const char *left, const char *right)
     {
         int left_len = std::strlen(left);
         int right_len = std::strlen(right);
@@ -58,7 +58,7 @@ namespace TAP
             return this->begin();
         }
 
-        //比较两个字符串,若相等返回0
+        //比较两个字符串,若相等返回0，
         int compare(const char *str)
         {
             int strLen = std::strlen(str);
@@ -70,6 +70,23 @@ namespace TAP
             //非空字符串，如果长度不等则不等
             if (strLen != this->size())
             {
+                int i = 0;
+                while (i < strLen && i < this->size() && this->c_str()[i] == str[i])
+                {
+                    i = i + 1;
+                }
+                if (i >= strLen)
+                {
+                    return this->c_str()[i];
+                }
+                else if (i >= this->size())
+                {
+                    return -str[i];
+                }
+                else
+                {
+                    return this->c_str() - str[i];
+                }
                 return this->c_str()[0] - str[0];
             }
             //逐个比较
@@ -113,7 +130,7 @@ namespace TAP
             return -1;
         }
         //寻找substring在string中的位置，找不到返回-1
-        int find(String &subString)
+        int find(String subString)
         {
             return this->find(subString.c_str());
         }
@@ -125,23 +142,24 @@ namespace TAP
         }
 
         //追加字符串
-        String &append(const char *str)
+        String append(const char *str)
         {
 
-            char *buffer = combine(this->c_str(), str);
-            String &result = *(new String(buffer));
-            //感觉导出都在内存泄漏，写个程序心惊胆战，就让他去漏吧
-            delete buffer;
+            const char *buffer = combine(this->c_str(), str);
+            String result(buffer);
+            //感觉到处都在内存泄漏，写个程序心惊胆战，就让他去漏吧
+            delete[] buffer;
             return result;
         }
-        String &append(String &str)
+
+        String append(String str)
         {
             return this->append(str.c_str());
         }
 
         //获取子字符串，获取从 [start, end)范围的字符串
         //会生成新的对象
-        String &subString(int start, int end = -1)
+        String subString(int start, int end = -1)
         {
             if (end <= start)
             {
@@ -156,7 +174,7 @@ namespace TAP
                 buff[i - start] = this->c_str()[i];
             }
             buff[subLen] = '\0';
-            String &result = *(new String(buff));
+            String result(buff);
 
             //由于buff传入String对象是拷贝一份的，buff本身没有作用了，此处删除是否可以防止内存泄漏？
             delete[] buff;
@@ -164,7 +182,7 @@ namespace TAP
         }
         //替换
         //不对替换当前字符串，而是重新创建于一个新的
-        String &replace(const char *oldString, const char *newString)
+        String replace(const char *oldString, const char *newString)
         {
             //旧字符串索引开始
             int oldIndex = this->find(oldString);
@@ -189,7 +207,8 @@ namespace TAP
             String *remainString = &(this->subString(0));
             int index = remainString->find(split);
 
-            if(index<0){
+            if (index < 0)
+            {
                 result->push_back(*(new String(this->c_str())));
             }
 
@@ -209,22 +228,23 @@ namespace TAP
         }
 
         //重载加号， 拼接字符串
-        friend String &operator+(String &left, String &right)
+        friend String operator+(String left, String right)
         {
             return left.append(right);
         }
         //允许直接与const  char *字符串进行拼接
-        friend String &operator+(String &left, const char *right)
+        friend String operator+(String left, const char *right)
         {
             return left.append(right);
         }
-        friend String &operator+(const char *left, String &right)
+        friend String operator+(const char *left, String &right)
         {
-            return *(new String(combine(left, right.c_str())));
+            String sleft(left);
+            return sleft.append(right);
         }
 
         // 直接打印引用中的内容
-        friend std::ostream &operator<<(std::ostream &out, String &str)
+        friend std::ostream &operator<<(std::ostream &out, String str)
         {
             return out << str.c_str();
         }

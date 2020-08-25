@@ -1,0 +1,4 @@
+total 44
+-rwxrwxrwx 1 yuwei yuwei 36376 Aug 24 18:45 a.out
+-rwxrwxrwx 1 yuwei yuwei     0 Aug 24 18:46 ls.txt
+-rwxrwxrwx 1 yuwei yuwei  4381 Aug 24 09:50 shell.cpp

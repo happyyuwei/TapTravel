@@ -148,6 +148,8 @@ int main()
         {
             //保存
             variableList.push_back(argList[0]);
+            // a, 1
+            //echo $a echo 1
         }
         else
         {
